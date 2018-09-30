@@ -19,14 +19,12 @@ class Box:
 
     def step(self, dt):
         self.state[:, :self.d] += dt * self.state[:, self.d:2*self.d]
-        #  self.state[:, :2] += dt * self.state[:, 2:4]
         self.find_collisions()
         self.bound_check()
 
     def find_collisions(self):
         # pairwise distances d[i, j]
         d = squareform(pdist(self.state[:, :self.d]))
-        #  d = squareform(pdist(self.state[:, :2]))
         # relevant indicies
         ind1, ind2 = np.where(d < 2*self.r)
         unique = (ind1 < ind2)
@@ -35,7 +33,6 @@ class Box:
         for j, k in zip(ind1, ind2):
             self.state[:, self.d:2*self.d][j], self.state[:, self.d:2*self.d][k] = \
                 self.collision(self.state[j], self.state[k])
-            #  self.state[:, 2:4][j], self.state[:, 2:4][k] = \
 
     def collision(self, p, q):
         x1 = p[:self.d]
@@ -44,12 +41,6 @@ class Box:
         v2 = q[self.d:2*self.d]
         m1 = p[2*self.d]
         m2 = q[2*self.d]
-        #  x1 = p[:2]
-        #  x2 = q[:2]
-        #  v1 = p[2:4]
-        #  v2 = q[2:4]
-        #  m1 = p[4]
-        #  m2 = q[4]
 
         x_rel = x1 - x2
         v_rel = v1 - v2
